@@ -1,0 +1,140 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="Str_AppTitle">гоутвеб</system:String>
+    <system:String x:Key="Str_Connection">Подключение</system:String>
+    <system:String x:Key="Str_Servers">Серверы</system:String>
+    <system:String x:Key="Str_Settings">Настройки</system:String>
+    <system:String x:Key="Str_CheckPing">Пинг</system:String>
+    <system:String x:Key="Str_ActivePing">⚡ Текущий пинг: </system:String>
+    <system:String x:Key="Str_Support">Поддержка</system:String>
+    <system:String x:Key="Str_Refresh">Обновить</system:String>
+    <system:String x:Key="Str_FastestServers">Быстрые серверы</system:String>
+    <system:String x:Key="Str_PingAll">Пинг</system:String>
+    <system:String x:Key="Str_SelectServerPrompt">Выберите сервер для подключения</system:String>
+    <system:String x:Key="Str_PingAllServers">Пинг</system:String>
+    <system:String x:Key="Str_SubscriptionLinkTitle">🔗 Ссылка на подписку</system:String>
+    <system:String x:Key="Str_SubscriptionLinkDesc">Вставьте ссылку на подписку.</system:String>
+    <system:String x:Key="Str_ImportLink">Импортировать</system:String>
+    <system:String x:Key="Str_ConnectionModeTitle">🛡️ Режим работы (Системный прокси / TUN)</system:String>
+    <system:String x:Key="Str_ConnectionModeDesc">Режим TUN направляет весь трафик ПК, включая игры (Требуются права админа).</system:String>
+    <system:String x:Key="Str_NetworkOptTitle">⚡ Оптимизация сети и протоколов</system:String>
+    <system:String x:Key="Str_RemoteDnsTitle">Удаленный DNS сервер</system:String>
+    <system:String x:Key="Str_RemoteDnsDesc">Используется для разрешения доменов внутри прокси-туннеля.</system:String>
+    <system:String x:Key="Str_MuxTitle">Включить Mux (мультиплексирование h2mux)</system:String>
+    <system:String x:Key="Str_MuxDesc">Снижает задержку и расходы на рукопожатия, но может определяться DPI.</system:String>
+    <system:String x:Key="Str_AllowLanTitle">Общий доступ к VPN в локальной сети (LAN)</system:String>
+    <system:String x:Key="Str_AllowLanDesc">Слушает на 0.0.0.0, чтобы другие устройства в Wi-Fi могли использовать прокси.</system:String>
+    <system:String x:Key="Str_SystemSecTitle">🔒 Управление системой и безопасностью</system:String>
+    <system:String x:Key="Str_AutoStartTitle">Запускать с Windows</system:String>
+    <system:String x:Key="Str_AutoStartDesc">Автоматически запускать VPN в трее при включении компьютера.</system:String>
+    <system:String x:Key="Str_KillSwitchTitle">Kill Switch (Блокировка интернета при сбое)</system:String>
+    <system:String x:Key="Str_KillSwitchDesc">Предотвращает утечку IP, если туннель внезапно разорвется.</system:String>
+    <system:String x:Key="Str_LanguageTitle">🌐 Язык / Language</system:String>
+    <system:String x:Key="Str_LanguageDesc">Выберите язык интерфейса / Select interface language.</system:String>
+    <system:String x:Key="Str_SubscriptionStatus">Статус подписки:</system:String>
+    <system:String x:Key="Str_DaysLeft">Осталось дней:</system:String>
+    <system:String x:Key="Str_Usage">Трафик: </system:String>
+
+    <!-- New UI/UX Tooltips & Headers -->
+    <system:String x:Key="Str_Minimize">Свернуть</system:String>
+    <system:String x:Key="Str_Maximize">Развернуть</system:String>
+    <system:String x:Key="Str_Close">Закрыть</system:String>
+    <system:String x:Key="Str_AccountSupport">Аккаунт и поддержка</system:String>
+
+    <!-- Tray Context Menu -->
+    <system:String x:Key="Str_TrayShow">Показать окно</system:String>
+    <system:String x:Key="Str_TrayDisconnect">Отключить VPN</system:String>
+    <system:String x:Key="Str_TrayExit">Выход</system:String>
+    <system:String x:Key="Str_TrayBackgroundText">RemnaVpn работает в фоновом режиме.</system:String>
+
+    <!-- Dialog Alerts -->
+    <system:String x:Key="Str_AdminWarningTitle">Требуются права администратора</system:String>
+    <system:String x:Key="Str_AdminWarningText">Режим TUN (VPN для всей системы) требует прав администратора.&#x0a;&#x0a;Пожалуйста, запустите приложение от имени Администратора или переключитесь на Системный прокси в настройках.</system:String>
+    <system:String x:Key="Str_AdminRestartPromptTitle">Требуются права администратора</system:String>
+    <system:String x:Key="Str_AdminRestartPromptText">TUN-режим требует прав администратора.&#x0a;&#x0a;Перезапустить приложение в режиме администратора?</system:String>
+
+    <!-- Dynamic Status & Validation Messages -->
+    <system:String x:Key="Str_StatusFetching">Загрузка подписки...</system:String>
+    <system:String x:Key="Str_StatusUrlEmpty">⚠️ Ссылка на подписку не может быть пустой.</system:String>
+    <system:String x:Key="Str_StatusSuccessLoaded">✅ Успешно загружено серверов: {0}.</system:String>
+    <system:String x:Key="Str_StatusError">❌ Ошибка: {0}</system:String>
+    <system:String x:Key="Str_StatusSettingsSaved">✅ Настройки успешно сохранены.</system:String>
+    <system:String x:Key="Str_StatusSettingsError">❌ Ошибка сохранения настроек: {0}</system:String>
+    <system:String x:Key="Str_StatusSelectServerFirst">[Система] Пожалуйста, сначала выберите сервер.</system:String>
+    <system:String x:Key="Str_StatusDownloadingCore">Скачивание ядра Xray... {0}</system:String>
+    <system:String x:Key="Str_StatusDownloadingCoreSimple">Скачивание ядра Xray...</system:String>
+    <system:String x:Key="Str_StatusCoreInstallError">Ошибка установки ядра. Проверьте логи.</system:String>
+
+    <!-- Log formats -->
+    <system:String x:Key="Str_LogAutoStartChanged">[Система] Автозапуск изменен на {0}</system:String>
+    <system:String x:Key="Str_LogVpnModeChanged">[Система] Режим VPN изменен на {0}</system:String>
+    <system:String x:Key="Str_LogSplitTunnelingChanged">[Система] Раздельное туннелирование изменено на {0}</system:String>
+    <system:String x:Key="Str_LogKillSwitchChanged">[Система] Режим Kill Switch изменен на {0}</system:String>
+    <system:String x:Key="Str_LogMuxChanged">[Система] Режим Mux изменен на {0}</system:String>
+    <system:String x:Key="Str_LogAllowLanChanged">[Система] Доступ в LAN изменен на {0}</system:String>
+    <system:String x:Key="Str_LogRemoteDnsChanged">[Система] Удаленный DNS изменен на {0}</system:String>
+    <system:String x:Key="Str_LogBypassRulesApplied">[Система] Правила обхода применены и сохранены.</system:String>
+    <system:String x:Key="Str_LogBypassRulesError">[Система] Ошибка применения правил обхода: {0}</system:String>
+    <system:String x:Key="Str_LogCoreReady">[Система] Ядро Xray готово к работе.</system:String>
+    <system:String x:Key="Str_LogCoreDownloadFailed">[Система] Ошибка загрузки ядра Xray: {0}</system:String>
+    <system:String x:Key="Str_LogAutoUpdatingSub">[Система] Автоматическое обновление подписки...</system:String>
+    <system:String x:Key="Str_LogSilentSubUpdateFailed">[Система] Не удалось автоматически обновить подписку: {0}. Используются кэшированные серверы.</system:String>
+    <system:String x:Key="Str_LogPeriodicSubUpdate">[Система] Периодическое фоновое обновление подписки (каждые 6 часов)...</system:String>
+    <system:String x:Key="Str_LogPeriodicUpdateFailed">[Система] Фоновое обновление не удалось: {0}</system:String>
+    <system:String x:Key="Str_LogRefreshingSub">[Система] Обновление подписки...</system:String>
+    <system:String x:Key="Str_LogRefreshSubFailed">[Ошибка] Не удалось обновить подписку: {0}</system:String>
+    <system:String x:Key="Str_LogSupportOpened">[Система] Открыта страница поддержки: {0}</system:String>
+    <system:String x:Key="Str_LogSupportFailed">[Ошибка] Не удалось открыть страницу поддержки: {0}</system:String>
+    <system:String x:Key="Str_LogSubReset">[Система] Подписка сброшена.</system:String>
+    <system:String x:Key="Str_LogSubClearError">[Система] Ошибка очистки подписки: {0}</system:String>
+    <system:String x:Key="Str_LogImportSuccess">[Система] Успешно импортировано серверов: {0}.</system:String>
+    <system:String x:Key="Str_LogLoadCacheError">[Система] Ошибка загрузки кэшированных серверов: {0}</system:String>
+    <system:String x:Key="Str_LogVpnStartError">[Система] Ошибка запуска VPN: {0}</system:String>
+    <system:String x:Key="Str_LogVpnConnectError">[Система] Ошибка установки соединения: {0}</system:String>
+    <system:String x:Key="Str_LogPingChecking">[Система] Проверка пинга для {0}...</system:String>
+    <system:String x:Key="Str_LogPingComplete">[Система] Проверка пинга завершена: {0}.</system:String>
+    <system:String x:Key="Str_LogPingAllChecking">[Система] Проверка задержки для всех серверов ({0})...</system:String>
+    <system:String x:Key="Str_LogPingAllComplete">[Система] Массовая проверка задержки завершена.</system:String>
+    <system:String x:Key="Str_LogNetworkChangeDetected">[Система] Обнаружено изменение сетевого адреса. Переподключение через 2 секунды...</system:String>
+    <system:String x:Key="Str_LogNetworkChangeFailed">[Система] Автоматическое переподключение не удалось: {0}</system:String>
+
+    <!-- Subscription expiration strings -->
+    <system:String x:Key="Str_DaysLeftUnlimited">Бессрочно</system:String>
+    <system:String x:Key="Str_DaysLeftExpired">Истекла</system:String>
+    <system:String x:Key="Str_DaysLeftCount">Осталось дней: {0}</system:String>
+    <system:String x:Key="Str_VlessServerDefaultName">Сервер VLESS</system:String>
+
+    <!-- Connection State Buttons / Labels -->
+    <system:String x:Key="Str_StatusTextConnect">Подключить</system:String>
+    <system:String x:Key="Str_StatusTextConnecting">Подключение...</system:String>
+    <system:String x:Key="Str_StatusTextDisconnect">Отключить</system:String>
+    <system:String x:Key="Str_StatusTextRetryConnect">Повторить</system:String>
+    
+    <system:String x:Key="Str_ButtonTextConnected">ПОДКЛЮЧЕНО</system:String>
+    <system:String x:Key="Str_ButtonTextConnecting">ПОДКЛЮЧЕНИЕ...</system:String>
+    <system:String x:Key="Str_ButtonTextError">ОШИБКА</system:String>
+    <system:String x:Key="Str_ButtonTextDisconnected">ОТКЛЮЧЕНО</system:String>
+    
+    <system:String x:Key="Str_ButtonSubtextDisconnect">НАЖМИТЕ ДЛЯ ОТКЛЮЧЕНИЯ</system:String>
+    <system:String x:Key="Str_ButtonSubtextWait">ПОЖАЛУЙСТА, ПОДОЖДИТЕ...</system:String>
+    <system:String x:Key="Str_ButtonSubtextRetry">НАЖМИТЕ ДЛЯ ПОВТОРА</system:String>
+    <system:String x:Key="Str_ButtonSubtextConnect">НАЖМИТЕ ДЛЯ ПОДКЛЮЧЕНИЯ</system:String>
+
+    <!-- Split Tunneling -->
+    <system:String x:Key="Str_SplitTunnelingTitle">🌐 Раздельное туннелирование</system:String>
+    <system:String x:Key="Str_SplitTunnelingDesc">Обход прокси для указанных доменов и процессов приложений.</system:String>
+    <system:String x:Key="Str_SplitTunnelingEnable">Включить раздельное туннелирование</system:String>
+    <system:String x:Key="Str_BypassDomainsTitle">Домены в обход (по одному в строке)</system:String>
+    <system:String x:Key="Str_BypassProcessesTitle">Процессы в обход (например, chrome.exe, по одному в строке)</system:String>
+    <system:String x:Key="Str_ApplyRules">Применить правила</system:String>
+
+    <!-- Logs & Logging Settings -->
+    <system:String x:Key="Str_Logs">Логи</system:String>
+    <system:String x:Key="Str_LogsTitle">📜 Журнал событий (Логи)</system:String>
+    <system:String x:Key="Str_LogsClear">Очистить логи</system:String>
+    <system:String x:Key="Str_LogsCopy">Копировать</system:String>
+    <system:String x:Key="Str_LogsEmpty">Журнал событий пуст. Запустите подключение, чтобы увидеть логи Xray.</system:String>
+    <system:String x:Key="Str_LoggingTitle">📜 Запись логов приложения</system:String>
+    <system:String x:Key="Str_LoggingDesc">Вести журнал событий и сохранять вывод ядра Xray в реальном времени.</system:String>
+</ResourceDictionary>

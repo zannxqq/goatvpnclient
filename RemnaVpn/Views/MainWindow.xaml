@@ -1,0 +1,1281 @@
+<Window x:Class="RemnaVpn.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RemnaVpn.Views"
+        xmlns:emoji="clr-namespace:iNKORE.UI.WPF.Emojis;assembly=iNKORE.UI.WPF.Emojis"
+        mc:Ignorable="d"
+        Title="🐐 VPN Client" Height="740" Width="880"
+        MinHeight="640" MinWidth="840"
+        WindowStyle="None" AllowsTransparency="True" ResizeMode="CanResizeWithGrip"
+        Background="#241820" Foreground="#FFFFFF"
+        WindowStartupLocation="CenterScreen"
+        FontSize="15"
+        FontFamily="Segoe UI, sans-serif">
+    <Window.Resources>
+        <FontFamily x:Key="EmojiFontFamily">Segoe UI Emoji, Segoe UI Symbol, Segoe UI, sans-serif</FontFamily>
+
+        <!-- Modern ScrollViewer style -->
+        <Style x:Key="ModernScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <!-- Custom Modern ScrollBar Style -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border x:Name="thumb" Background="#54384B" CornerRadius="4" Margin="2,0"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="thumb" Property="Background" Value="#F2729B"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter TargetName="thumb" Property="Background" Value="#FF88B3"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom ComboBoxItem Style -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#2F202B"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="6" Margin="2">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#4A2B3E"/>
+                                <Setter Property="Foreground" Value="#F2729B"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#3D2938"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom ComboBox Toggle Button Template -->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="10"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" />
+                <Path x:Name="Arrow" Grid.Column="1" Fill="#C89BAE" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Data="M 0 0 L 4 4 L 8 0 Z"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="#250E1B" />
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#F2729B" />
+                    <Setter TargetName="Arrow" Property="Fill" Value="#F2729B" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="#250E1B" />
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#F2729B" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Custom ComboBox Style (Custom Bottom Sheet / Popup Menu) -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="#180811"/>
+            <Setter Property="BorderBrush" Value="#3B172A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid SnapsToDevicePixels="True">
+                            <ToggleButton Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}"
+                                          Grid.Column="2" Focusable="false"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border CornerRadius="12" Background="#250E1B" BorderBrush="#52233B" BorderThickness="1" Margin="0,6,0,0" Padding="6">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="20" ShadowDepth="6" Color="#000000" Opacity="0.6"/>
+                                        </Border.Effect>
+                                        <ScrollViewer Margin="4" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom Modern Toggle Switch (CheckBox) Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="track" Width="44" Height="24" CornerRadius="12" Background="#1A1017" BorderBrush="#46303F" BorderThickness="1.5">
+                                <Ellipse x:Name="thumb" Width="16" Height="16" Fill="#886075" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                            </Border>
+                            <ContentPresenter Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="track" Property="Background" Value="#F2729B"/>
+                                <Setter TargetName="track" Property="BorderBrush" Value="#F2729B"/>
+                                <Setter TargetName="thumb" Property="Fill" Value="#FFFFFF"/>
+                                <Setter TargetName="thumb" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="thumb" Property="Margin" Value="0,0,3,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="track" Property="BorderBrush" Value="#886075"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Title Bar Button Styles -->
+        <Style x:Key="TitleBarButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#B08396"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#321B2A"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleBarCloseButton" TargetType="Button" BasedOn="{StaticResource TitleBarButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E81123"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Sidebar Navigation RadioButton Style -->
+        <Style x:Key="SidebarNavButton" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#B08396"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="Margin" Value="12,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3D1B2D"/>
+                                <Setter Property="Foreground" Value="#F2729B"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2B121D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Server Card RadioButton Style -->
+        <Style x:Key="ServerCardRadio" TargetType="RadioButton">
+            <Setter Property="Background" Value="#2F202B"/>
+            <Setter Property="BorderBrush" Value="#46303F"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="card" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="card" Property="BorderBrush" Value="#F2729B"/>
+                                <Setter TargetName="card" Property="Background" Value="#3D2938"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="card" Property="BorderBrush" Value="#7A4565"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Check Ping Pill Button Style -->
+        <Style x:Key="CheckPingButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A2B3E"/>
+            <Setter Property="Foreground" Value="#F2729B"/>
+            <Setter Property="BorderBrush" Value="#62364F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="16" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#58344B"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2B121D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Big Circle Connect Button Style with State-Driven Glow Animations -->
+        <Style x:Key="CircleConnectButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Width="240" Height="240">
+                            <!-- Outer Dark Ring -->
+                            <Ellipse Stroke="#3B1729" StrokeThickness="10"/>
+                            
+                            <!-- State-driven Outward Glowing Ring -->
+                            <Ellipse x:Name="outwardGlow" Stroke="#C83C70" StrokeThickness="14" Margin="-6" Opacity="0">
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="28"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            
+                            <!-- Inner Pink Ring -->
+                            <Ellipse x:Name="innerRing" Stroke="#F2729B" StrokeThickness="4" Margin="8" Fill="#2F202B"/>
+                            
+                            <!-- State-driven Inward Glowing Ring -->
+                            <Ellipse x:Name="inwardGlow" Margin="12" Opacity="0">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush>
+                                        <GradientStop Color="Transparent" Offset="0.3"/>
+                                        <GradientStop Color="#80FF88B3" Offset="0.8"/>
+                                        <GradientStop Color="#FFFF88B3" Offset="1.0"/>
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="16"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            
+                            <!-- Hover Glow Effect -->
+                            <Ellipse x:Name="glow" Fill="#F2729B" Opacity="0" Margin="12">
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="30"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover state -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="innerRing" Property="Stroke" Value="#FF88B3"/>
+                                <Setter TargetName="glow" Property="Opacity" Value="0.2"/>
+                            </Trigger>
+                            <!-- Pressed state -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="innerRing" Property="Fill" Value="#1A0811"/>
+                            </Trigger>
+
+                            <!-- Connecting State: Gentle persistent pulsing glow -->
+                            <DataTrigger Binding="{Binding Status}" Value="Connecting">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="ConnectingGlow">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="outwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             From="0.2" To="0.75" Duration="0:0:0.8" AutoReverse="True">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseInOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="inwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             From="0.2" To="0.75" Duration="0:0:0.8" AutoReverse="True">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseInOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <RemoveStoryboard BeginStoryboardName="ConnectingGlow"/>
+                                </DataTrigger.ExitActions>
+                                <Setter TargetName="innerRing" Property="Stroke" Value="#FF88B3"/>
+                            </DataTrigger>
+
+                            <!-- Disconnecting State: Soft amber pulsing glow -->
+                            <DataTrigger Binding="{Binding Status}" Value="Disconnecting">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="DisconnectingGlow">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="outwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             From="0.6" To="0.15" Duration="0:0:0.6" AutoReverse="True">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseInOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="inwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             From="0.6" To="0.15" Duration="0:0:0.6" AutoReverse="True">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseInOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <RemoveStoryboard BeginStoryboardName="DisconnectingGlow"/>
+                                </DataTrigger.ExitActions>
+                                <Setter TargetName="innerRing" Property="Stroke" Value="#FF9800"/>
+                            </DataTrigger>
+
+                            <!-- Connected State: Stable bright continuous glow -->
+                            <DataTrigger Binding="{Binding Status}" Value="Connected">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="outwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             To="0.85" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="inwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             To="0.95" Duration="0:0:0.4"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="outwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="inwardGlow" Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.4"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                                <Setter TargetName="innerRing" Property="Stroke" Value="#FF88B3"/>
+                            </DataTrigger>
+
+                            <!-- Error State: Strong red alert glow -->
+                            <DataTrigger Binding="{Binding Status}" Value="Error">
+                                <Setter TargetName="innerRing" Property="Stroke" Value="#E81123"/>
+                                <Setter TargetName="outwardGlow" Property="Stroke" Value="#E81123"/>
+                                <Setter TargetName="outwardGlow" Property="Opacity" Value="0.4"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Unified Server Card Template with Country Flag Box, Emoji Support, and Conditional JSON Badge -->
+        <DataTemplate x:Key="ServerCardTemplate">
+            <RadioButton Style="{StaticResource ServerCardRadio}" GroupName="{Binding DataContext.CurrentPage, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=ServersGroup}"
+                          IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 0: Flag Box + Clean Name and Green Monospace Ping Micro-Badge -->
+                    <Grid Grid.Row="0" Margin="0,0,0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Country Flag Box -->
+                        <Border Grid.Column="0" Width="26" Height="26" Background="#361525" BorderBrush="#4E2036" BorderThickness="1" CornerRadius="5" Margin="0,0,6,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <emoji:EmojiedTextBlock Text="{Binding CountryFlag}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Clean Server Name with generous LineHeight so emojis never get clipped -->
+                        <emoji:EmojiedTextBlock Grid.Column="1" Text="{Binding CleanName}" FontSize="13.5" FontWeight="Bold" Foreground="#FFFFFF" 
+                                   TextTrimming="CharacterEllipsis" LineHeight="17" VerticalAlignment="Center" Margin="0,0,4,0"/>
+
+                        <!-- Ping Micro-Badge -->
+                        <Border Grid.Column="2" Background="#143322" BorderBrush="#24593C" BorderThickness="1" CornerRadius="4" Padding="5,2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding FormattedPing}" FontSize="11" FontWeight="Bold" FontFamily="Consolas, Courier New, monospace" Foreground="#4ADE80"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Row 1: Badges (Protocol + Conditional JSON + Transport) -->
+                    <Grid Grid.Row="1">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <!-- Protocol Badge (VLESS / VLESS REALITY) -->
+                            <Border Background="#3D1B2D" BorderBrush="#52233B" BorderThickness="1" CornerRadius="4" Padding="5,1" Margin="0,0,3,0">
+                                <TextBlock Text="{Binding ProtocolBadge}" FontSize="9.5" FontWeight="Bold" Foreground="#F2729B"/>
+                            </Border>
+
+                            <!-- Conditional JSON Badge -->
+                            <Border Background="#4E1A30" BorderBrush="#682542" BorderThickness="1" CornerRadius="4" Padding="5,1" Margin="0,0,3,0">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasJsonModule}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="XRAY JSON" FontSize="9.5" FontWeight="Bold" Foreground="#FF80A6"/>
+                            </Border>
+
+                            <!-- Transport Badge (TCP/WS/GRPC) -->
+                            <Border Background="#2A111F" CornerRadius="4" Padding="5,1">
+                                <TextBlock Text="{Binding TransportBadge}" FontSize="9.5" FontWeight="Bold" Foreground="#C89BAE"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </RadioButton>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="38"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- CUSTOM TITLE BAR -->
+        <Border Grid.Row="0" Background="#1D0E17" BorderBrush="#361B2C" BorderThickness="0,0,0,1"
+                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                    <emoji:EmojiedTextBlock Text="🐐" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="{DynamicResource Str_AppTitle}" FontSize="13" FontWeight="Bold" Foreground="#E6C8D8" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Window Control Buttons -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Style="{StaticResource TitleBarButton}" Content="🗕" Click="MinimizeButton_Click" ToolTip="{DynamicResource Str_Minimize}"/>
+                    <Button Style="{StaticResource TitleBarButton}" Content="🗖" Click="MaximizeButton_Click" ToolTip="{DynamicResource Str_Maximize}"/>
+                    <Button Style="{StaticResource TitleBarCloseButton}" Content="✕" Click="CloseButton_Click" ToolTip="{DynamicResource Str_Close}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- MAIN WORKSPACE ROWS -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <!-- Left Sidebar (Navigation) ~ 22% -->
+                <ColumnDefinition Width="210"/>
+                <!-- Main Workspace (Right Area) ~ 78% -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ============================================== -->
+            <!-- 1. LEFT SIDEBAR (NAVIGATION)                   -->
+            <!-- ============================================== -->
+            <Border Grid.Column="0" Background="#1F141B" BorderBrush="#35242E" BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Name="BrandingRow" Height="Auto"/>
+                        <RowDefinition x:Name="MenuRow" Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Branding / Title -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,24,20,20" VerticalAlignment="Center">
+                        <emoji:EmojiedTextBlock Text="🐐" FontSize="24" Margin="0,0,10,0"/>
+                        <TextBlock Text="{DynamicResource Str_AppTitle}" FontSize="18" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Menu Items -->
+                    <StackPanel Grid.Row="1">
+                        <RadioButton GroupName="NavMenu" IsChecked="{Binding IsConnectionPage, Mode=OneWay}"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Connection"
+                                     Style="{StaticResource SidebarNavButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <emoji:EmojiedTextBlock Text="📈" FontSize="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="{DynamicResource Str_Connection}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton GroupName="NavMenu" IsChecked="{Binding IsServersPage, Mode=OneWay}"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Servers"
+                                     Style="{StaticResource SidebarNavButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <emoji:EmojiedTextBlock Text="🗄️" FontSize="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="{DynamicResource Str_Servers}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton GroupName="NavMenu" IsChecked="{Binding IsSettingsPage, Mode=OneWay}"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Settings"
+                                     Style="{StaticResource SidebarNavButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <emoji:EmojiedTextBlock Text="⚙️" FontSize="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="{DynamicResource Str_Settings}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton GroupName="NavMenu" IsChecked="{Binding IsLogsPage, Mode=OneWay}"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Logs"
+                                     Style="{StaticResource SidebarNavButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <emoji:EmojiedTextBlock Text="📜" FontSize="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="{DynamicResource Str_Logs}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </RadioButton>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ============================================== -->
+            <!-- 2. MAIN WORKSPACE AREA (RIGHT COLUMN)          -->
+            <!-- ============================================== -->
+            <Border Grid.Column="1" Background="#241820" Padding="28,24,28,24" ClipToBounds="False">
+                <Grid ClipToBounds="False">
+                    <Grid.RowDefinitions>
+                        <!-- Header Bar -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Dynamic Page Content -->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- TOP HEADER BAR -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20" Panel.ZIndex="2">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <!-- Selected Server Name -->
+                            <TextBlock Text="{Binding SelectedServer.CleanName, FallbackValue='No Server Selected'}" FontSize="16" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                            <!-- Status Display Badge -->
+                            <Border Background="#1AFFFFFF" CornerRadius="6" Padding="10,5" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ConnectionStatusDisplay}" FontSize="13" FontWeight="SemiBold" 
+                                           Foreground="{Binding StatusColor}" VerticalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <!-- Reserved right area for future global controls -->
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- ============================================== -->
+                    <!-- PAGE 1: CONNECTION DASHBOARD                   -->
+                    <!-- ============================================== -->
+                    <ScrollViewer Grid.Row="1" ClipToBounds="False" Panel.ZIndex="1">
+                        <ScrollViewer.Style>
+                            <Style TargetType="ScrollViewer" BasedOn="{StaticResource ModernScrollViewer}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPage}" Value="Connection">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Style>
+
+                        <StackPanel Margin="0,0,0,16" ClipToBounds="False">
+                            <!-- CENTRAL CONNECT BUTTON -->
+                            <Button Style="{StaticResource CircleConnectButton}" Command="{Binding ToggleConnectionCommand}" Margin="0,20,0,14" ClipToBounds="False">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <!-- Logo and Loading Spinner Container -->
+                                    <Grid Width="72" Height="72" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,12">
+                                        <!-- Goat Emoji (Hidden when Connecting/Disconnecting) -->
+                                        <emoji:EmojiedTextBlock Text="🐐" FontSize="56" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <emoji:EmojiedTextBlock.Style>
+                                                <Style TargetType="emoji:EmojiedTextBlock">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Connecting">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Disconnecting">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </emoji:EmojiedTextBlock.Style>
+                                        </emoji:EmojiedTextBlock>
+
+                                        <!-- Progress Ring Spinner (Visible ONLY when Connecting/Disconnecting) -->
+                                        <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Connecting">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Disconnecting">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <!-- Background Track Circle -->
+                                            <Ellipse Stroke="#26FFFFFF" StrokeThickness="4" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <!-- Animated Spinning Arc -->
+                                            <Path StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Data="M 36,8 A 28,28 0 0 1 64,36 A 28,28 0 0 1 36,64"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center" Width="72" Height="72" Stretch="None">
+                                                <Path.RenderTransform>
+                                                    <RotateTransform Angle="0" CenterX="36" CenterY="36"/>
+                                                </Path.RenderTransform>
+                                                <Path.Style>
+                                                    <Style TargetType="Path">
+                                                        <Setter Property="Stroke" Value="#FF4ADE80"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Disconnecting">
+                                                                <Setter Property="Stroke" Value="#FFF59E0B"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Path.Style>
+                                                <Path.Triggers>
+                                                    <EventTrigger RoutedEvent="Loaded">
+                                                        <BeginStoryboard>
+                                                            <Storyboard RepeatBehavior="Forever">
+                                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                                 From="0" To="360" Duration="0:0:0.9" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                </Path.Triggers>
+                                            </Path>
+                                        </Grid>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding ConnectionButtonText}" FontSize="16" FontWeight="SemiBold" FontFamily="Segoe UI Variable Display, Segoe UI, sans-serif" Foreground="#FFFFFF" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="190"/>
+                                    <TextBlock Text="{Binding ConnectionButtonSubtext}" FontSize="12.5" Foreground="#C89BAE" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="180">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="0,4,0,0"/>
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="Margin" Value="0"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="Margin" Value="0"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+
+                            </Button>
+
+                            <!-- Active Server Ping Indicator & Check Ping Button -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-4,0,16">
+                                <Border Background="#143322" BorderBrush="#24593C" BorderThickness="1" CornerRadius="12" Padding="14,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <emoji:EmojiedTextBlock Text="{DynamicResource Str_ActivePing}" FontSize="13" Foreground="#85E5A8" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{Binding SelectedServer.FormattedPing, FallbackValue='— ms'}" FontSize="14" FontWeight="Bold" FontFamily="Consolas, Courier New, monospace" Foreground="#4ADE80" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        <Button Style="{StaticResource CheckPingButton}" Command="{Binding CheckPingsCommand}" Padding="10,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <emoji:EmojiedTextBlock Text="⚡" FontSize="13" Margin="0,0,4,0"/>
+                                                <TextBlock Text="{DynamicResource Str_CheckPing}" FontSize="12" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Announce Banner / Tips -->
+                            <Border Margin="0,0,0,18" Padding="16,12" Background="#3D1B2D" CornerRadius="12" BorderBrush="#52233B" BorderThickness="1">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SubscriptionInfo.HasAnnounce}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <emoji:EmojiedTextBlock Text="💡" FontSize="18" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                    <emoji:EmojiedTextBlock Text="{Binding SubscriptionInfo.Announce}" FontSize="14" Foreground="#FFD285" TextWrapping="Wrap" LineHeight="20" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- ACCOUNT & SUPPORT CARD (Highly Responsive WrapPanel Layout) -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="24" Margin="0,0,0,24">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Str_AccountSupport}" FontSize="18" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,18"/>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="32"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Info Column -->
+                                        <StackPanel Grid.Column="0" Margin="0,0,0,16">
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                                <emoji:EmojiedTextBlock Text="👤" FontSize="22" Foreground="#C89BAE" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{DynamicResource Str_SubscriptionStatus}" FontSize="13" FontFamily="Segoe UI, sans-serif" Foreground="#E0E0E0"/>
+                                                    <emoji:EmojiedTextBlock Text="{Binding SubscriptionInfo.Title}" FontSize="16" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,2,0,0"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <emoji:EmojiedTextBlock Text="📅" FontSize="22" Foreground="#C89BAE" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{DynamicResource Str_DaysLeft}" FontSize="13" FontFamily="Segoe UI, sans-serif" Foreground="#E0E0E0"/>
+                                                    <TextBlock Text="{Binding SubscriptionInfo.FormattedDaysLeft}" FontSize="16" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <!-- Xray JSON Imported Badge -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SubscriptionInfo.HasImportedJson}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                <Border Background="#3D1B2D" BorderBrush="#F2729B" BorderThickness="1" CornerRadius="6" Padding="8,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <emoji:EmojiedTextBlock Text="⚡" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="XRAY JSON IMPORTED" FontSize="11" FontWeight="Bold" Foreground="#F2729B" VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Usage & Control Buttons Column -->
+                                        <StackPanel Grid.Column="2" Margin="0,0,0,16">
+                                            <!-- Traffic: centered icon + value only, no label -->
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,6">
+                                                <emoji:EmojiedTextBlock Text="📊" FontSize="18" Foreground="#C89BAE" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="{Binding SubscriptionInfo.FormattedTraffic}" FontSize="14" FontFamily="Segoe UI, sans-serif" FontWeight="SemiBold" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <!-- Progress Bar -->
+                                            <ProgressBar Value="{Binding SubscriptionInfo.TrafficProgress, Mode=OneWay}" Maximum="100" Height="8" 
+                                                         Background="#1A0811" Foreground="#D84A78" BorderThickness="0" Margin="0,0,0,18"/>
+
+                                            <!-- Dynamic Support Button -->
+                                            <Button Command="{Binding OpenSupportCommand}" Height="40" Cursor="Hand" ToolTip="{DynamicResource Str_Support}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="#3D1B2D" BorderBrush="#52233B" BorderThickness="1" CornerRadius="10">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <emoji:EmojiedTextBlock Text="🎧" FontSize="15" Margin="0,0,6,0"/>
+                                                                <TextBlock Text="{DynamicResource Str_Support}" FontSize="13" FontWeight="Bold" Foreground="#F2729B"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#4E2036"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#F2729B"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- FASTEST SERVERS GRID HEADER WITH REFRESH AND MASS PING -->
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_FastestServers}" FontSize="18" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,12,0"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Style="{StaticResource CheckPingButton}" Command="{Binding RefreshSubscriptionCommand}" ToolTip="{DynamicResource Str_Refresh}" Padding="10,5" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <emoji:EmojiedTextBlock Text="🔄" FontSize="13" Margin="0,0,4,0"/>
+                                            <TextBlock Text="{DynamicResource Str_Refresh}" FontSize="12" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource CheckPingButton}" Command="{Binding CheckAllPingsCommand}" ToolTip="{DynamicResource Str_PingAll}" Padding="10,5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <emoji:EmojiedTextBlock Text="⚡" FontSize="13" Margin="0,0,4,0"/>
+                                            <TextBlock Text="{DynamicResource Str_PingAll}" FontSize="12" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- 2-Column Grid of Server Cards -->
+                            <ItemsControl ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource ServerCardTemplate}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- ============================================== -->
+                    <!-- PAGE 2: ALL SERVERS VIEW                       -->
+                    <!-- ============================================== -->
+                    <Grid Grid.Row="1">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPage}" Value="Servers">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Top Action Bar -->
+                            <Border Grid.Row="0" Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,18">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{DynamicResource Str_SelectServerPrompt}" FontSize="14" FontWeight="SemiBold" Foreground="#C89BAE" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,12,0"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Style="{StaticResource CheckPingButton}" Command="{Binding RefreshSubscriptionCommand}" ToolTip="{DynamicResource Str_Refresh}" Padding="10,5" Margin="0,0,6,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <emoji:EmojiedTextBlock Text="🔄" FontSize="13" Margin="0,0,4,0"/>
+                                                <TextBlock Text="{DynamicResource Str_Refresh}" FontSize="12" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Style="{StaticResource CheckPingButton}" Command="{Binding CheckAllPingsCommand}" ToolTip="{DynamicResource Str_PingAllServers}" Padding="10,5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <emoji:EmojiedTextBlock Text="⚡" FontSize="13" Margin="0,0,4,0"/>
+                                                <TextBlock Text="{DynamicResource Str_PingAllServers}" FontSize="12" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Servers List -->
+                            <ScrollViewer Grid.Row="1" Style="{StaticResource ModernScrollViewer}">
+                                <ItemsControl ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource ServerCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="2"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+
+                    <!-- ============================================== -->
+                    <!-- PAGE 3: SETTINGS & CONFIGURATION               -->
+                    <!-- ============================================== -->
+                    <ScrollViewer Grid.Row="1">
+                        <ScrollViewer.Style>
+                            <Style TargetType="ScrollViewer" BasedOn="{StaticResource ModernScrollViewer}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPage}" Value="Settings">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Style>
+
+                        <StackPanel Margin="0,0,0,24">
+                            <!-- Card 1: Subscription URL -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,18">
+                                <StackPanel>
+                                    <emoji:EmojiedTextBlock Text="{DynamicResource Str_SubscriptionLinkTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,8"/>
+                                    <TextBlock Text="{DynamicResource Str_SubscriptionLinkDesc}" FontSize="13" Foreground="#C89BAE" Margin="0,0,0,14" TextWrapping="Wrap"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Text="{Binding SubscriptionInputUrl, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" BorderThickness="1"
+                                                 Padding="14,12" VerticalContentAlignment="Center" FontSize="14" Margin="0,0,8,0">
+                                            <TextBox.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="10"/>
+                                                </Style>
+                                            </TextBox.Resources>
+                                        </TextBox>
+                                        <Button Grid.Column="1" Style="{StaticResource CheckPingButton}" Margin="4,0,0,0"
+                                                Command="{Binding ImportSubscriptionCommand}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <emoji:EmojiedTextBlock Text="📥" FontSize="15" Margin="0,0,6,0"/>
+                                                <TextBlock Text="{DynamicResource Str_ImportLink}" FontSize="14" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <TextBlock Text="{Binding SubscriptionStatusMessage}" FontSize="13" Foreground="#FF5E7E" Margin="0,8,0,0"
+                                               Visibility="{Binding SubscriptionStatusMessage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Card 2: Routing & Core Mode -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,18">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                        <emoji:EmojiedTextBlock Text="{DynamicResource Str_ConnectionModeTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource Str_ConnectionModeDesc}" FontSize="13" Foreground="#C89BAE" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <ComboBox Grid.Column="1" ItemsSource="{Binding VpnModes}" SelectedItem="{Binding VpnMode}"
+                                              MinWidth="160" Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" Padding="10,8" FontSize="14" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Card 3: DNS & Optimizations -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,18">
+                                <StackPanel>
+                                    <emoji:EmojiedTextBlock Text="{DynamicResource Str_NetworkOptTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,16"/>
+
+                                    <!-- Remote DNS -->
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_RemoteDnsTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_RemoteDnsDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" ItemsSource="{Binding DnsPresets}" SelectedItem="{Binding RemoteDns}"
+                                                  MinWidth="160" Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" Padding="10,6" FontSize="13" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Mux Toggle -->
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_MuxTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_MuxDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding MuxEnabled}" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Allow LAN Toggle -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_AllowLanTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_AllowLanDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding AllowLan}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Card 4: System & Security -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,18">
+                                <StackPanel>
+                                    <emoji:EmojiedTextBlock Text="{DynamicResource Str_SystemSecTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,16"/>
+
+                                    <!-- Auto-Start -->
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_AutoStartTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_AutoStartDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding AutoStart}" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Kill Switch -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_KillSwitchTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_KillSwitchDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding KillSwitchEnabled}" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Logging Toggle -->
+                                    <Grid Margin="0,16,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_LoggingTitle}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_LoggingDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding LoggingEnabled}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Card 5: Interface Language / Язык -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,18">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                        <emoji:EmojiedTextBlock Text="{DynamicResource Str_LanguageTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource Str_LanguageDesc}" FontSize="13" Foreground="#C89BAE" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <ComboBox Grid.Column="1" ItemsSource="{Binding AvailableLanguages}" SelectedItem="{Binding SelectedLanguage}"
+                                              MinWidth="150" Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" Padding="10,8" FontSize="14" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Card 6: Split Tunneling (Bypass Rules) -->
+                            <Border Background="#250E1B" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="16" Padding="22">
+                                <StackPanel>
+                                    <emoji:EmojiedTextBlock Text="{DynamicResource Str_SplitTunnelingTitle}" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,16"/>
+                                    
+                                    <!-- Toggle Split Tunneling -->
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Str_SplitTunnelingEnable}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{DynamicResource Str_SplitTunnelingDesc}" FontSize="12" Foreground="#C89BAE" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding SplitTunnelingEnabled}" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Bypass Rules Details Panel -->
+                                    <StackPanel Visibility="{Binding SplitTunnelingEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{DynamicResource Str_BypassDomainsTitle}" FontSize="13" Foreground="#C89BAE" Margin="0,0,0,6"/>
+                                        <TextBox Text="{Binding BypassDomainsText, UpdateSourceTrigger=PropertyChanged}"
+                                                 AcceptsReturn="True" Height="80" VerticalScrollBarVisibility="Auto"
+                                                 Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" BorderThickness="1"
+                                                 Padding="10" FontSize="13" Margin="0,0,0,14">
+                                            <TextBox.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="8"/>
+                                                </Style>
+                                            </TextBox.Resources>
+                                        </TextBox>
+
+                                        <TextBlock Text="{DynamicResource Str_BypassProcessesTitle}" FontSize="13" Foreground="#C89BAE" Margin="0,0,0,6"/>
+                                        <TextBox Text="{Binding BypassProcessesText, UpdateSourceTrigger=PropertyChanged}"
+                                                 AcceptsReturn="True" Height="80" VerticalScrollBarVisibility="Auto"
+                                                 Background="#180811" Foreground="#FFFFFF" BorderBrush="#3B172A" BorderThickness="1"
+                                                 Padding="10" FontSize="13" Margin="0,0,0,14">
+                                            <TextBox.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="8"/>
+                                                </Style>
+                                            </TextBox.Resources>
+                                        </TextBox>
+
+                                        <Button Style="{StaticResource CheckPingButton}" HorizontalAlignment="Left" Command="{Binding ApplyBypassRulesCommand}">
+                                            <TextBlock Text="{DynamicResource Str_ApplyRules}" FontSize="13" FontWeight="Bold"/>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- ============================================== -->
+                    <!-- PAGE 4: LOGS DASHBOARD                         -->
+                    <!-- ============================================== -->
+                    <Grid Grid.Row="1">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPage}" Value="Logs">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Logs Toolbar -->
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <emoji:EmojiedTextBlock Text="{DynamicResource Str_LogsTitle}" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Style="{StaticResource CheckPingButton}" Command="{Binding CopyLogsCommand}" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <emoji:EmojiedTextBlock Text="📋" FontSize="14" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{DynamicResource Str_LogsCopy}" FontSize="13" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource CheckPingButton}" Command="{Binding ClearLogsCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <emoji:EmojiedTextBlock Text="🗑️" FontSize="14" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{DynamicResource Str_LogsClear}" FontSize="13" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Logs Console Box -->
+                        <Border Grid.Row="1" Background="#14060E" BorderBrush="#3B172A" BorderThickness="1" CornerRadius="12" Padding="14">
+                            <Grid>
+                                <TextBox Text="{Binding Logs, Mode=OneWay}"
+                                         IsReadOnly="True"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         VerticalScrollBarVisibility="Auto"
+                                         HorizontalScrollBarVisibility="Disabled"
+                                         Background="Transparent"
+                                         Foreground="#00FF66"
+                                         BorderThickness="0"
+                                         FontFamily="Consolas, Courier New, Monospace"
+                                         FontSize="13"/>
+                                <TextBlock Text="{DynamicResource Str_LogsEmpty}"
+                                           Foreground="#60354A" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           IsHitTestVisible="False">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Logs}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Logs}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

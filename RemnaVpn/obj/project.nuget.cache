@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "U1HMWJWEHzI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\wexlib\\.gemini\\antigravity\\scratch\\RemnaVpn\\RemnaVpn\\RemnaVpn.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wexlib\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.2\\communitytoolkit.mvvm.8.4.2.nupkg.sha512",
+    "C:\\Users\\wexlib\\.nuget\\packages\\inkore.ui.wpf.emojis\\0.3.6.4\\inkore.ui.wpf.emojis.0.3.6.4.nupkg.sha512",
+    "C:\\Users\\wexlib\\.nuget\\packages\\system.security.cryptography.protecteddata\\10.0.9\\system.security.cryptography.protecteddata.10.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}

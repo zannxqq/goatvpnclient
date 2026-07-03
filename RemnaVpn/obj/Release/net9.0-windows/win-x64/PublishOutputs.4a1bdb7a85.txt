@@ -1,0 +1,9 @@
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\RemnaVpn.pdb
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\Fonts\Twemoji.Mozilla.ttf
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\Assets\logo.png
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\D3DCompiler_47_cor3.dll
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\PenImc_cor3.dll
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\PresentationNative_cor3.dll
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\vcruntime140_cor3.dll
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\wpfgfx_cor3.dll
+C:\Users\wexlib\.gemini\antigravity\scratch\RemnaVpn\RemnaVpn\bin\Release\net9.0-windows\win-x64\publish\RemnaVpn.exe
