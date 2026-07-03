@@ -36,8 +36,8 @@
 
 ```bash
 # Клонирование репозитория
-git clone [https://github.com/ВАШ_НИК/GoatWebVPN.git](https://github.com/ВАШ_НИК/GoatWebVPN.git)
-cd GoatWebVPN
+git clone [https://github.com/zannxqq/goatvpnclient.git](https://github.com/zannxqq/goatvpnclient.git)
+cd goatvpnclient
 
 # Запуск в режиме разработки
 dotnet run
